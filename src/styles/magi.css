@@ -1,0 +1,75 @@
+.container {
+    border-color: var(--theme-color);
+    border-width: 2px;
+    border-style: solid;
+    padding: 10px;
+    margin: 10px;
+}
+
+#app-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 95vh;
+    width: 97%;
+}
+
+#magi-container {
+    height: 97%;
+    width: 98%;
+}
+
+#input-container {
+    height: 10%;
+    width: 98%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#input-title {
+    font-family: 'D2Coding', var(--font-family-base);
+    font-size: 2.5rem;
+    font-weight:bolder;
+    padding: 10px;
+    color: var(--theme-color);
+}
+
+.input-field {
+    width: 80%;
+    height: 50%;
+    border: 1px solid var(--theme-color);
+    padding: 10px;
+    background-color: transparent;
+    color: var(--theme-color);
+    font-size: 1.5rem;
+    font-weight: 100;    
+}
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;      /* 파란 외곽선 제거 */
+  box-shadow: none;   /* 그림자 효과 제거 */
+  border-color: inherit;  /* 클릭 시 border 색 유지 */
+}
+
+.input-button {
+    font-family: 'TsukuhouShogoMin', var(--font-family-base);
+    width: 10rem;
+    height: 50%;
+    padding: 10px;
+    color:black;
+    background-color: var(--theme-color);
+    text-align: center;
+    font-size: 2.1rem;
+    font-weight: 600;
+    border: 1px solid var(--theme-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    &:hover {
+        background-color: transparent;
+        color: var(--theme-color);
+    }
+}

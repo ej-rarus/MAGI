@@ -3,11 +3,10 @@
   --font-weight-base: 400;
   --line-height-base: 1.5;
 
-  --color-bg: #333;
+  --color-bg: #000000;
   --color-text: #fff;
+  --theme-color: #FF7F00;
 
-  color-scheme: light dark;
-  font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -16,7 +15,6 @@
 *,
 *::before,
 *::after {
-  box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
@@ -39,4 +37,14 @@ button {
 a {
   text-decoration: none;
   color: inherit;
+}
+
+@font-face {
+  font-family: 'TsukuhouShogoMin';
+  src: url('/fonts/TsukuhouShogoMin-OFL.otf') format('truetype');
+}
+
+@font-face {
+  font-family: 'D2Coding';
+  src: url('/fonts/D2Coding-Ver1.3.2-20180524-all.ttc') format('truetype');
 }

@@ -1,12 +1,11 @@
 import './App.css'
+import Magi from './pages/Magi'
 
 function App() {
 
   return (
     <>
-      <div>
-        <h1>Hello World</h1>
-      </div>
+      <Magi />
     </>
   )
 }
