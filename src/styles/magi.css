@@ -2,6 +2,10 @@
     border-color: var(--theme-color);
     border-width: 2px;
     border-style: solid;
+    box-shadow:
+    0 0 2px #ff6600,
+    0 0 4px #ff3300,
+    0 0 6px #ff0000;   
 }
 
 #app-container {
@@ -32,23 +36,44 @@
 }
 
 #input-title {
-    font-family: 'D2Coding', var(--font-family-base);
-    font-size: 2.5rem;
-    font-weight:bolder;
+    font-family: monospace;
+    font-size: 2rem;
     padding: 10px;
+    padding-right:0;
     color: var(--theme-color);
+    letter-spacing: -0.05em;
+    text-shadow:
+        0 0 2px #ff6600,
+        0 0 4px #ff3300,
+        0 0 6px #ff0000;
 }
 
 .input-field {
     width: 80%;
     height: 50%;
-    border: 1px solid var(--theme-color);
+    border:none;
+    font-family: monospace;
+    /* border: 1px solid var(--theme-color); */
     padding: 10px;
+    padding-left:0;
     background-color: transparent;
     color: var(--theme-color);
-    font-size: 1rem;
-    font-weight: 100;    
+    font-size: 1.5rem;
+    font-weight:400;    
+    text-shadow:
+        0 0 2px #ff6600,
+        0 0 4px #ff3300,
+        0 0 6px #ff0000;
 }
+
+.input-field::placeholder {
+    color: var(--theme-color);
+    font-weight: 600;
+    text-shadow:
+        0 0 2px #ff6600,
+        0 0 4px #ff3300;
+}
+
 input:focus,
 textarea:focus,
 select:focus {
@@ -57,15 +82,20 @@ select:focus {
   border-color: inherit;  /* 클릭 시 border 색 유지 */
 }
 
+input:focus::placeholder {
+    color: transparent;
+    text-shadow: none;
+  }
+
 .input-button {
-    font-family: 'TsukuhouShogoMin', var(--font-family-base);
+    font-family: monospace;
     width: 10rem;
     height: 50%;
     margin-right: 10px;
     color:black;
     background-color: var(--theme-color);
     text-align: center;
-    font-size: 1rem;
+    font-size: 1.5rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -73,6 +103,10 @@ select:focus {
         background-color: transparent;
         color: var(--theme-color);
     }
+    box-shadow:
+    0 0 2px #ff6600,
+    0 0 4px #ff3300,
+    0 0 6px #ff0000;
 }
 
 .balthasar-svg {
@@ -102,6 +136,23 @@ select:focus {
     height: auto;
     margin-bottom: 1rem;
     margin-left: 1rem;
+}
+
+.magi-title {
+    position: absolute;
+    top: 68%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 3rem;
+    color: var(--theme-color);
+    letter-spacing: 0.05em;
+    text-shadow:
+        0 0 2px #ff6600,
+        0 0 4px #ff3300,
+        0 0 6px #ff0000,
+        0 0 8px #ff0000,
+        0 0 10px #ff0000;
 }
 
 @media screen and (min-width: 1024px) {

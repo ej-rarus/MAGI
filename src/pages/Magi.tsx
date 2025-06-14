@@ -22,11 +22,12 @@ function Magi() {
             <Balthasar className="balthasar-svg" />
             <Melchior className="melchior-svg" />
             <Casper className="casper-svg" />
+            <h1 className='magi-title'>MAGI</h1>
         </div>
         <div id="input-container" className="container">
-            <div id="input-title">QUESTION:</div>
+            <div id="input-title">question:</div>
             <input className="input-field" type="text" placeholder="여기에 질문을 입력" /> 
-            <button className="input-button">確 認</button>
+            <button className="input-button">submit</button>
         </div>
     </div>
   );
