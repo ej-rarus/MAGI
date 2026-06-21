@@ -368,7 +368,7 @@ export const buildFallbackNodeJudgement = (
     verdict,
     confidence: Math.min(confidence, 96),
     provider: profile.provider,
-    model: `${profile.displayProvider} local judgement`,
+    model: `${profile.displayProvider} judgement`,
     source: 'fallback',
     summary: `${copyVariant.summaryLead[verdict]} ${copy.summary}`,
     reason: `${profile.displayProvider} 내부 판단 루틴은 "${signalCode}" 신호를 기준으로 ${copyVariant.reasonLead} ${copy.reason}`,

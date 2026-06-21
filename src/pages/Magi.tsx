@@ -284,7 +284,7 @@ function Magi() {
                                 <dd>{selectedInsight.concern}</dd>
                             </div>
                         </dl>
-                        <small>{selectedInsight.model} / {selectedInsight.source === 'api' ? 'API LINK' : 'LOCAL FALLBACK'}</small>
+                        <small>{selectedInsight.model} / {selectedInsight.source === 'api' ? 'API LINK' : 'INTERNAL LINK'}</small>
                     </aside>
                 ) : null}
             </div>

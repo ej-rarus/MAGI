@@ -99,7 +99,7 @@ describe('magi judgement', () => {
 
     expect(held.finalVerdict).toBe('保留')
     expect(rejected.finalVerdict).toBe('否決')
-    expect(approved.judges.balthasar.model).toBe('Claude local judgement')
+    expect(approved.judges.balthasar.model).toBe('Claude judgement')
     expect(approved.judges.balthasar.reason).toContain('내부 판단 루틴')
     expect(approved.judges.balthasar.reason).not.toContain('매직8볼')
     expect(approved.judges.balthasar.concern).not.toContain('무작위')
