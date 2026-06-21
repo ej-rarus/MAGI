@@ -1,54 +1,60 @@
-# React + TypeScript + Vite
+# MAGI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Evangelion MAGI-style decision console built with React, TypeScript, and Vite.
 
-Currently, two official plugins are available:
+The UI always works without API keys. When `/api/judgement` is available, the three MAGI nodes try real model calls:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- `MELCHIOR•1` -> Gemini
+- `BALTHASAR•2` -> Claude
+- `CASPER•3` -> ChatGPT / OpenAI
 
-## Expanding the ESLint configuration
+If an API key is missing, a provider fails, or the endpoint is unavailable, that node falls back to the local MAGI demo engine. The final verdict still completes with all three nodes.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Development
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The plain Vite dev server does not serve the serverless `api/judgement.ts` function. In that mode the UI intentionally falls back to local judgement. Deploying with a serverless environment such as Vercel, or running an equivalent API server for `/api/judgement`, enables live model calls.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Environment
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+Copy `.env.example` to your local environment and set only the keys you want to enable.
+
+For API-free demo mode, keep the client in local mode:
+
+```bash
+VITE_MAGI_API_MODE=local
+```
+
+For live model calls, switch the client to `auto` or `api` and provide the server API keys:
+
+```bash
+VITE_MAGI_API_MODE=api
+VITE_MAGI_API_ENDPOINT=/api/judgement
+VITE_MAGI_API_TIMEOUT_MS=6000
+```
+
+```bash
+OPENAI_API_KEY=
+ANTHROPIC_API_KEY=
+GEMINI_API_KEY=
+```
+
+Optional model overrides:
+
+```bash
+OPENAI_MODEL=gpt-5.4-mini
+ANTHROPIC_MODEL=claude-sonnet-4-6
+GEMINI_MODEL=gemini-3.5-flash
+```
+
+## Checks
+
+```bash
+npm test
+npm run lint
+npm run build
 ```
