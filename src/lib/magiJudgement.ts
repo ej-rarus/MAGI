@@ -46,6 +46,12 @@ type FallbackJudgementOptions = {
   roll?: FallbackRoll
 }
 
+type LocalCopyVariant = {
+  summaryLead: Record<Verdict, string>
+  reasonLead: string
+  concernTail: string
+}
+
 export const NODE_SEQUENCE: MagiNode[] = ['melchior', 'balthasar', 'casper']
 
 export const NODE_PROFILES: Record<MagiNode, NodeProfile> = {
@@ -259,10 +265,60 @@ const magicEightBallOutcomes: MagicEightBallOutcome[] = [
   },
 ]
 
-const pickMagicEightBallOutcome = (roll: FallbackRoll = Math.random) => {
+const normalizeRoll = (rollValue: number) => {
+  return Number.isFinite(rollValue) ? Math.max(0, Math.min(rollValue, 0.999_999)) : 0.5
+}
+
+const pickByRoll = <T,>(items: T[], roll: FallbackRoll = Math.random) => {
   const rolled = roll()
-  const normalizedRoll = Number.isFinite(rolled) ? Math.max(0, Math.min(rolled, 0.999_999)) : 0.5
-  return magicEightBallOutcomes[Math.floor(normalizedRoll * magicEightBallOutcomes.length)]
+  return items[Math.floor(normalizeRoll(rolled) * items.length)]
+}
+
+const pickMagicEightBallOutcome = (roll: FallbackRoll = Math.random) => {
+  return pickByRoll(magicEightBallOutcomes, roll)
+}
+
+const localCopyVariants: LocalCopyVariant[] = [
+  {
+    summaryLead: {
+      可決: '주요 조건이 긍정적으로 수렴합니다.',
+      保留: '판단 신호가 아직 완전히 닫히지 않았습니다.',
+      否決: '진행 신호보다 중단 신호가 강합니다.',
+    },
+    reasonLead: '질문의 실행성, 중단 조건, 사용자 기대치를 교차 검토했습니다.',
+    concernTail: '최종 적용 전에는 현재 전제가 유지되는지 다시 확인하는 편이 좋습니다.',
+  },
+  {
+    summaryLead: {
+      可決: '현재 입력에서는 진행 가능성이 우세합니다.',
+      保留: '핵심 변수 일부가 불안정하게 남아 있습니다.',
+      否決: '예상되는 손실과 재작업 가능성이 크게 감지됩니다.',
+    },
+    reasonLead: '입력의 목적, 되돌리기 가능성, 결과 체감 품질을 비교했습니다.',
+    concernTail: '상황이 바뀌면 같은 질문도 다른 결론으로 재평가될 수 있습니다.',
+  },
+  {
+    summaryLead: {
+      可決: '작업을 밀어도 되는 쪽으로 신호가 정렬됩니다.',
+      保留: '지금은 결론보다 확인 절차가 먼저입니다.',
+      否決: '지금 진행하면 얻는 것보다 잃을 것이 많아 보입니다.',
+    },
+    reasonLead: '실행 경로와 보호 조건, 사용자가 기대하는 결과 사이의 균형을 계산했습니다.',
+    concernTail: '결정이 크다면 작은 검증 단위로 한 번 나누어 보는 것이 안전합니다.',
+  },
+  {
+    summaryLead: {
+      可決: '제출된 조건 안에서는 긍정 판정이 더 설득력 있습니다.',
+      保留: '충분한 결론을 내리기에는 신호가 엇갈립니다.',
+      否決: '중단 또는 재검토 쪽 판단이 더 강하게 나타납니다.',
+    },
+    reasonLead: '비용, 리스크, 의도 일치도를 나누어 점검했습니다.',
+    concernTail: '판단은 현재 입력에 한정되며, 누락된 조건이 있으면 결과가 흔들릴 수 있습니다.',
+  },
+]
+
+const pickLocalCopyVariant = (roll?: FallbackRoll) => {
+  return pickByRoll(localCopyVariants, roll)
 }
 
 export const buildDemoVerdicts = (
@@ -299,22 +355,24 @@ export const buildFallbackNodeJudgement = (
   node: MagiNode,
   question: string,
   verdict = buildDemoVerdicts(question)[node],
-  magicAnswer = 'LOCAL MAGIC 8',
+  localSignal = 'LOCAL SIGNAL',
+  copyVariant = pickLocalCopyVariant(),
 ): NodeJudgement => {
   const profile = NODE_PROFILES[node]
   const copy = fallbackCopy[node][verdict]
   const confidence = 58 + ((hashQuestion(`${question}:${node}`) % 28) + (verdict === '保留' ? 0 : 7))
+  const signalCode = `${localSignal}-${hashQuestion(`${question}:${node}:${verdict}`).toString().padStart(3, '0')}`
 
   return {
     node,
     verdict,
     confidence: Math.min(confidence, 96),
     provider: profile.provider,
-    model: `${profile.displayProvider} magic 8 fallback`,
+    model: `${profile.displayProvider} local judgement`,
     source: 'fallback',
-    summary: `${magicAnswer}: ${copy.summary}`,
-    reason: `${profile.displayProvider} API가 연결되지 않아 실제 모델 판단 대신 로컬 매직8볼 신호를 사용했습니다. 이 노드는 "${magicAnswer}" 결과를 ${profile.role} 패널에 표시합니다.`,
-    concern: `${copy.concern} 이 판단은 데모용 무작위 신호이므로 실제 결정 근거가 필요하면 API 판단을 연결해야 합니다.`,
+    summary: `${copyVariant.summaryLead[verdict]} ${copy.summary}`,
+    reason: `${profile.displayProvider} 내부 판단 루틴은 "${signalCode}" 신호를 기준으로 ${copyVariant.reasonLead} ${copy.reason}`,
+    concern: `${copy.concern} ${copyVariant.concernTail}`,
   }
 }
 
@@ -338,7 +396,13 @@ export const buildFallbackJudgement = (
   const nodeVerdicts = forcedVerdicts ?? magicOutcome?.votes ?? buildDemoVerdicts(question, options.roll)
   const magicAnswer = magicOutcome?.answer ?? 'DEMO OVERRIDE'
   const judges = NODE_SEQUENCE.reduce<Record<MagiNode, NodeJudgement>>((result, node) => {
-    result[node] = buildFallbackNodeJudgement(node, question, nodeVerdicts[node], magicAnswer)
+    result[node] = buildFallbackNodeJudgement(
+      node,
+      question,
+      nodeVerdicts[node],
+      magicAnswer,
+      pickLocalCopyVariant(options.roll),
+    )
     return result
   }, {} as Record<MagiNode, NodeJudgement>)
 

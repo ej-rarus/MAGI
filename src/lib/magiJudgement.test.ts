@@ -23,6 +23,11 @@ const makeJudge = (
   concern: `${node} concern`,
 })
 
+const makeRoll = (...rolls: number[]) => {
+  let index = 0
+  return () => rolls[index++] ?? rolls[rolls.length - 1] ?? 0
+}
+
 describe('magi judgement', () => {
   it('builds final verdict by majority vote', () => {
     expect(
@@ -83,7 +88,7 @@ describe('magi judgement', () => {
     expect(judgement.judges.balthasar.reason.length).toBeGreaterThan(10)
   })
 
-  it('uses a magic-eight-ball shake for API-free fallback judgement', () => {
+  it('uses varied local fallback results without exposing the randomizer in node copy', () => {
     const approved = buildFallbackJudgement('모바일 UI를 개선해줘', { roll: () => 0.04 })
     const held = buildFallbackJudgement('모바일 UI를 개선해줘', { roll: () => 0.62 })
     const rejected = buildFallbackJudgement('모바일 UI를 개선해줘', { roll: () => 0.9 })
@@ -94,7 +99,19 @@ describe('magi judgement', () => {
 
     expect(held.finalVerdict).toBe('保留')
     expect(rejected.finalVerdict).toBe('否決')
-    expect(approved.judges.balthasar.model).toContain('magic 8')
-    expect(approved.judges.balthasar.reason).toContain('매직8볼')
+    expect(approved.judges.balthasar.model).toBe('Claude local judgement')
+    expect(approved.judges.balthasar.reason).toContain('내부 판단 루틴')
+    expect(approved.judges.balthasar.reason).not.toContain('매직8볼')
+    expect(approved.judges.balthasar.concern).not.toContain('무작위')
+  })
+
+  it('varies local fallback copy across repeated matching verdicts', () => {
+    const first = buildFallbackJudgement('모바일 UI를 개선해줘', { roll: makeRoll(0.04, 0.05, 0.1, 0.15) })
+    const second = buildFallbackJudgement('모바일 UI를 개선해줘', { roll: makeRoll(0.04, 0.82, 0.86, 0.9) })
+
+    expect(first.finalVerdict).toBe(second.finalVerdict)
+    expect(first.judges.balthasar.verdict).toBe(second.judges.balthasar.verdict)
+    expect(first.judges.balthasar.reason).not.toBe(second.judges.balthasar.reason)
+    expect(first.judges.balthasar.concern).not.toBe(second.judges.balthasar.concern)
   })
 })
